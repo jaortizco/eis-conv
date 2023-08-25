@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eisconv"
+dynamic = ["version"]
+authors = [{ name = "jaortizco", email = "jaortizco@gmail.com" }]
+description = "EIS data - file converter"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU GPLv3",
+    "Operating System :: OS Independent",
+]
+dependencies = ["numpy", "pyside6", "xlwings"]
+
+[project.urls]
+repository = "https://github.com/jaortizco/eis-conv"
+homepage = "https://github.com/jaortizco/eis-conv"
+bug-tracker = "https://github.com/jaortizco/eis-conv/issues"
+
+[project.gui-scripts]
+eisconv = "main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = { attr = "eisconv.__version__" }
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.yapf]
+COLUMN_LIMIT = 79
+DEDENT_CLOSING_BRACKETS = true
+ARITHMETIC_PRECEDENCE_INDICATION = true
+SPLIT_BEFORE_ARITHMETIC_OPERATOR = true
+NO_SPACES_AROUND_SELECTED_BINARY_OPERATORS = "*,/"
