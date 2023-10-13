@@ -34,7 +34,7 @@ class HPStyle:
             data[:, 1] = data[:, 1]/magnitude_squared
             data[:, 3] = data[:, 3]/magnitude_squared
 
-        return data[:, 5], data[:, 1], -data[:, 3]
+        return data[:, 5]*1e3, data[:, 1], -data[:, 3]
 
     def convert_to_ohm(
         self,
