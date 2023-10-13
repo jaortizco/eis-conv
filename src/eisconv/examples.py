@@ -9,7 +9,7 @@ from eisconv.import_styles.nova_style import NovaStyle
 
 def example_1():
     myfile = "hp_example_data.txt"
-    myfile = Path(Path(__file__).resolve().parents[1], "./test_data/" + myfile)
+    myfile = Path(Path(__file__).resolve().parents[2], "./test_data/" + myfile)
 
     import_style = HPStyle()
     export_style = ZviewStyle()
@@ -21,7 +21,7 @@ def example_1():
 
 def example_2():
     myfile = "autolab_example_data.txt"
-    myfile = Path(Path(__file__).resolve().parents[1], "./test_data/" + myfile)
+    myfile = Path(Path(__file__).resolve().parents[2], "./test_data/" + myfile)
 
     import_style = NovaStyle()
     export_style = ExcelStyle()
