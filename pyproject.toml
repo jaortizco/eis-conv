@@ -22,7 +22,7 @@ homepage = "https://github.com/jaortizco/eis-conv"
 bug-tracker = "https://github.com/jaortizco/eis-conv/issues"
 
 [project.gui-scripts]
-eisconv = "main:main"
+eisconv = "eisconv.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
