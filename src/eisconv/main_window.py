@@ -26,6 +26,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.data_imported = False
+        self.current_directory = Path.cwd()
 
         # Set window
         self.set_icons()
@@ -57,10 +58,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             Path(file) for file in QFileDialog.getOpenFileNames(
                 parent=self,
                 caption="Select a file",
-                dir=str(Path.cwd()),
+                dir=str(self.current_directory),
                 filter="Text File (*.txt)",
             )[0]
         ]
+        self.current_directory = self.myfiles[0].parent
 
         self.impedance_data = []
         for myfile in self.myfiles:
