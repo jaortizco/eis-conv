@@ -25,6 +25,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
+        self.data_imported = False
+
         # Set window
         self.set_icons()
 
@@ -64,22 +66,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 impedance.load_data(myfile, self.import_style)
                 self.add_files_to_list_widget()
                 self.data_imported = True
+
             except (ValueError, IndexError):
-                msg = (
+                message = (
                     f'"{myfile.name}"\n'
                     + "Something went wrong when loading data.\n"
                     + "You may want to double check your file."
                 )
-                dlg = QMessageBox(self)
-                dlg.setWindowTitle("Warning!")
-                dlg.setText(msg)
-                dlg.setIcon(QMessageBox.Warning)
-                dlg.exec()
+
+                dialog = QMessageBox(self)
+                dialog.setWindowTitle("Warning!")
+                dialog.setText(message)
+                dialog.setIcon(QMessageBox.Warning)
+                dialog.exec()
 
     def export_data(self):
-        self.export_style = STYLES[self.comboBoxExport.currentText()]
-        for impedance in self.impedance_data:
-            impedance.export_data(self.export_style)
+        if self.data_imported:
+            self.export_style = STYLES[self.comboBoxExport.currentText()]
+            for impedance in self.impedance_data:
+                impedance.export_data(self.export_style)
+
+        else:
+            message = "No data has been loaded yet."
+
+            dialog = QMessageBox(self)
+            dialog.setWindowTitle("Warning!")
+            dialog.setText(message)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec()
 
     def add_files_to_list_widget(self):
         self.listWidget.addItems([str(item.name) for item in self.myfiles])
