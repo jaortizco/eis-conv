@@ -82,17 +82,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def export_data(self):
         if self.data_imported:
-            self.export_style = STYLES[self.comboBoxExport.currentText()]
-            for impedance in self.impedance_data:
-                impedance.export_data(self.export_style)
+            try:
+                self.export_style = STYLES[self.comboBoxExport.currentText()]
+                for impedance in self.impedance_data:
+                    impedance.export_data(self.export_style)
+                dialog = QMessageBox(self)
+                dialog.setWindowTitle("Success!")
+                dialog.setText("Data have been exported!.")
+                dialog.setIcon(QMessageBox.Information)
+                dialog.exec()
+
+            except (ValueError, IndexError):
+                dialog = QMessageBox(self)
+                dialog.setWindowTitle("Warning!")
+                dialog.setText("Data export failed.")
+                dialog.setIcon(QMessageBox.Critical)
+                dialog.exec()
 
         else:
-            message = "No data has been loaded yet."
-
             dialog = QMessageBox(self)
-            dialog.setWindowTitle("Warning!")
-            dialog.setText(message)
-            dialog.setIcon(QMessageBox.Warning)
+            dialog.setWindowTitle("Oops!")
+            dialog.setText("Have you loaded any data yet?.")
+            dialog.setIcon(QMessageBox.Question)
             dialog.exec()
 
     def add_files_to_list_widget(self):
