@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QFileDialog, QMainWindow
+from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox
 
 from eisconv.eis_data import EisData
 from eisconv.export_styles.enums import ExportStyles, ImportStyles
@@ -60,10 +60,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.impedance_data = [EisData() for _ in range(len(self.myfiles))]
         for impedance, myfile in zip(self.impedance_data, self.myfiles):
-            impedance.load_data(myfile, self.import_style)
-
-        self.add_files_to_list_widget()
-        self.data_imported = True
+            try:
+                impedance.load_data(myfile, self.import_style)
+                self.add_files_to_list_widget()
+                self.data_imported = True
+            except (ValueError, IndexError):
+                msg = (
+                    f'"{myfile.name}"\n'
+                    + "Something went wrong when loading data.\n"
+                    + "You may want to double check your file."
+                )
+                dlg = QMessageBox(self)
+                dlg.setWindowTitle("Warning!")
+                dlg.setText(msg)
+                dlg.setIcon(QMessageBox.Warning)
+                dlg.exec()
 
     def export_data(self):
         self.export_style = STYLES[self.comboBoxExport.currentText()]
