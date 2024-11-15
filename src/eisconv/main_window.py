@@ -62,7 +62,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 filter="Text File (*.txt)",
             )[0]
         ]
-        self.current_directory = self.myfiles[0].parent
+        if self.myfiles:
+            self.current_directory = self.myfiles[0].parent
 
         self.impedance_data = []
         for myfile in self.myfiles:
@@ -79,12 +80,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     + "Something went wrong when loading data.\n"
                     + "You may want to double check your file."
                 )
-
-                dialog = QMessageBox(self)
-                dialog.setWindowTitle("Warning!")
-                dialog.setText(message)
-                dialog.setIcon(QMessageBox.Warning)  # type: ignore
-                dialog.exec()
+                self.dialog_warning(message)
 
         self.data_imported = True if self.listWidget.count() > 0 else False
 
@@ -94,22 +90,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.export_style = STYLES[self.comboBoxExport.currentText()]
                 for impedance in self.impedance_data:
                     impedance.export_data(self.export_style)
-                dialog = QMessageBox(self)
-                dialog.setWindowTitle("Success!")
-                dialog.setText("Data has been exported!")
-                dialog.setIcon(QMessageBox.Information)  # type: ignore
-                dialog.exec()
+                self.dialog_information("Data has been exported!")
 
             except (ValueError, IndexError):
-                dialog = QMessageBox(self)
-                dialog.setWindowTitle("Warning!")
-                dialog.setText("Data export failed.")
-                dialog.setIcon(QMessageBox.Critical)  # type: ignore
-                dialog.exec()
+                self.dialog_critical("Data export failed.")
 
         else:
-            dialog = QMessageBox(self)
-            dialog.setWindowTitle("Oops!")
-            dialog.setText("Have you loaded any data yet?.")
-            dialog.setIcon(QMessageBox.Question)  # type: ignore
-            dialog.exec()
+            self.dialog_question("Have you loaded any data yet?")
+
+    def dialog_information(self, message):
+        dialog = QMessageBox(self)
+        dialog.setWindowTitle("Success!")
+        dialog.setText("Data has been exported!")
+        dialog.setIcon(QMessageBox.Information)  # type: ignore
+        dialog.exec()
+
+    def dialog_question(self, message):
+        dialog = QMessageBox(self)
+        dialog.setWindowTitle("Oops!")
+        dialog.setText(message)
+        dialog.setIcon(QMessageBox.Question)  # type: ignore
+        dialog.exec()
+
+    def dialog_warning(self, message):
+        dialog = QMessageBox(self)
+        dialog.setWindowTitle("Warning!")
+        dialog.setText(message)
+        dialog.setIcon(QMessageBox.Warning)  # type: ignore
+        dialog.exec()
+
+    def dialog_critical(self, message):
+        dialog = QMessageBox(self)
+        dialog.setWindowTitle("Error!")
+        dialog.setText(message)
+        dialog.setIcon(QMessageBox.Critical)  # type: ignore
+        dialog.exec()
