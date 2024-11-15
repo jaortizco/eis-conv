@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QFileDialog, QMainWindow
+from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox
 
 from eisconv.eis_data import EisData
 from eisconv.export_styles.enums import ExportStyles, ImportStyles
@@ -25,16 +25,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
+        self.data_imported = False
+
         # Set window
         self.set_icons()
 
         self.comboBoxImport.addItems(
-            [ImportStyles.HP.value, ImportStyles.NOVA.value]
+            [ImportStyles.NOVA.value, ImportStyles.HP.value]
         )
         self.comboBoxImport.setCurrentIndex(0)
 
         self.comboBoxExport.addItems(
-            [ExportStyles.EXCEL.value, ExportStyles.ZVIEW.value]
+            [ExportStyles.ZVIEW.value, ExportStyles.EXCEL.value]
         )
         self.comboBoxExport.setCurrentIndex(0)
 
@@ -60,15 +62,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.impedance_data = [EisData() for _ in range(len(self.myfiles))]
         for impedance, myfile in zip(self.impedance_data, self.myfiles):
-            impedance.load_data(myfile, self.import_style)
+            try:
+                impedance.load_data(myfile, self.import_style)
+                self.add_files_to_list_widget()
+                self.data_imported = True
 
-        self.add_files_to_list_widget()
-        self.data_imported = True
+            except (ValueError, IndexError):
+                message = (
+                    f'"{myfile.name}"\n'
+                    + "Something went wrong when loading data.\n"
+                    + "You may want to double check your file."
+                )
+
+                dialog = QMessageBox(self)
+                dialog.setWindowTitle("Warning!")
+                dialog.setText(message)
+                dialog.setIcon(QMessageBox.Warning)
+                dialog.exec()
 
     def export_data(self):
-        self.export_style = STYLES[self.comboBoxExport.currentText()]
-        for impedance in self.impedance_data:
-            impedance.export_data(self.export_style)
+        if self.data_imported:
+            self.export_style = STYLES[self.comboBoxExport.currentText()]
+            for impedance in self.impedance_data:
+                impedance.export_data(self.export_style)
+
+        else:
+            message = "No data has been loaded yet."
+
+            dialog = QMessageBox(self)
+            dialog.setWindowTitle("Warning!")
+            dialog.setText(message)
+            dialog.setIcon(QMessageBox.Warning)
+            dialog.exec()
 
     def add_files_to_list_widget(self):
         self.listWidget.addItems([str(item.name) for item in self.myfiles])
