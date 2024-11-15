@@ -31,12 +31,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.set_icons()
 
         self.comboBoxImport.addItems(
-            [ImportStyles.HP.value, ImportStyles.NOVA.value]
+            [ImportStyles.NOVA.value, ImportStyles.HP.value]
         )
         self.comboBoxImport.setCurrentIndex(0)
 
         self.comboBoxExport.addItems(
-            [ExportStyles.EXCEL.value, ExportStyles.ZVIEW.value]
+            [ExportStyles.ZVIEW.value, ExportStyles.EXCEL.value]
         )
         self.comboBoxExport.setCurrentIndex(0)
 
