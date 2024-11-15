@@ -49,6 +49,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setWindowIcon(QIcon(str(Path(dir_icon, "icon.svg"))))
 
     def import_data(self):
+        self.listWidget.clear()
+
         self.import_style = STYLES[self.comboBoxImport.currentText()]
 
         self.myfiles = [
@@ -60,12 +62,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             )[0]
         ]
 
-        self.impedance_data = [EisData() for _ in range(len(self.myfiles))]
-        for impedance, myfile in zip(self.impedance_data, self.myfiles):
+        self.impedance_data = []
+        for myfile in self.myfiles:
             try:
+                impedance = EisData()
                 impedance.load_data(myfile, self.import_style)
-                self.add_files_to_list_widget()
-                self.data_imported = True
+
+                self.impedance_data.append(impedance)
+                self.listWidget.addItem(myfile.name)
 
             except (ValueError, IndexError):
                 message = (
@@ -77,8 +81,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 dialog = QMessageBox(self)
                 dialog.setWindowTitle("Warning!")
                 dialog.setText(message)
-                dialog.setIcon(QMessageBox.Warning)
+                dialog.setIcon(QMessageBox.Warning)  # type: ignore
                 dialog.exec()
+
+        self.data_imported = True if self.listWidget.count() > 0 else False
 
     def export_data(self):
         if self.data_imported:
@@ -88,23 +94,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     impedance.export_data(self.export_style)
                 dialog = QMessageBox(self)
                 dialog.setWindowTitle("Success!")
-                dialog.setText("Data have been exported!.")
-                dialog.setIcon(QMessageBox.Information)
+                dialog.setText("Data have been exported!")
+                dialog.setIcon(QMessageBox.Information)  # type: ignore
                 dialog.exec()
 
             except (ValueError, IndexError):
                 dialog = QMessageBox(self)
                 dialog.setWindowTitle("Warning!")
                 dialog.setText("Data export failed.")
-                dialog.setIcon(QMessageBox.Critical)
+                dialog.setIcon(QMessageBox.Critical)  # type: ignore
                 dialog.exec()
 
         else:
             dialog = QMessageBox(self)
             dialog.setWindowTitle("Oops!")
             dialog.setText("Have you loaded any data yet?.")
-            dialog.setIcon(QMessageBox.Question)
+            dialog.setIcon(QMessageBox.Question)  # type: ignore
             dialog.exec()
-
-    def add_files_to_list_widget(self):
-        self.listWidget.addItems([str(item.name) for item in self.myfiles])
