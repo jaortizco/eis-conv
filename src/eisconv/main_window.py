@@ -96,7 +96,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     impedance.export_data(self.export_style)
                 dialog = QMessageBox(self)
                 dialog.setWindowTitle("Success!")
-                dialog.setText("Data have been exported!")
+                dialog.setText("Data has been exported!")
                 dialog.setIcon(QMessageBox.Information)  # type: ignore
                 dialog.exec()
 
