@@ -26,7 +26,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.data_imported = False
-        self.current_directory = Path.cwd()
+        self.current_directory = Path.home()
 
         # Set window
         self.set_icons()
