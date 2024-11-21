@@ -101,7 +101,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def dialog_information(self, message):
         dialog = QMessageBox(self)
         dialog.setWindowTitle("Success!")
-        dialog.setText("Data has been exported!")
+        dialog.setText(message)
         dialog.setIcon(QMessageBox.Information)  # type: ignore
         dialog.exec()
 
